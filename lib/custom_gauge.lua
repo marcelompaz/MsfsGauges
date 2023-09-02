@@ -43,11 +43,16 @@ function draw_needle(needle, cfg)
 
     _triangle(cfg.centerX - (needle.needle_tickness / 2), cfg.centerY - needle_size,
         cfg.centerX + (needle.needle_tickness / 2), cfg.centerY - needle_size, cfg.centerX,
-        cfg.centerX - cfg.radius + cfg.minor_tick)
+        cfg.centerY - cfg.radius + cfg.minor_tick)
     _fill(needle.needle_color)
 
     _circle(cfg.centerX, cfg.centerY, circle_r)
     _fill(needle.circle_color)
+
+    if needle.needle_label then
+        _txt(needle.needle_label[2], needle.needle_label[1], cfg.centerX , cfg.centerY - (cfg.radius/2))
+    end
+
 end
 
 function draw_gauge(cfg)
@@ -56,17 +61,26 @@ function draw_gauge(cfg)
     cfg.centerX = cfg.size / 2
     cfg.centerY = cfg.size / 2
 
-    canvas_id = canvas_add(0, 0, cfg.size, cfg.size)
+    if cfg.top_x and cfg.top_y then
+        canvas_id = canvas_add(cfg.top_x, cfg.top_y, cfg.size, cfg.size)
+    else
+        canvas_id = canvas_add(0, 0, cfg.size, cfg.size)        
+    end
+    
 
     canvas_draw(canvas_id, function()
 
-        _rect(0, 0, cfg.size, cfg.size)
-        _fill(cfg.background)
+        if cfg.background then
+            _rect(0, 0, cfg.size, cfg.size)
+            _fill(cfg.background)
+        end
         _circle(cfg.centerX, cfg.centerY, cfg.radius)
         _fill(cfg.gauge_bottom)
 
-        for _, arc in pairs(cfg.arcs) do
-            draw_arc(arc, cfg)
+        if cfg.arcs then
+            for _, arc in pairs(cfg.arcs) do
+                draw_arc(arc, cfg)
+            end
         end
 
         div = (cfg.end_angle - cfg.initial_angle) / (cfg.num_ticks - 1)
@@ -88,13 +102,22 @@ function draw_gauge(cfg)
 
     end)
 
+
+    return cfg
+
 end
 
 LAST_HANDLE = 1
 NEEDLE_VALUES = {}
 
 function add_needle(cfg, needle_cfg)
-    needle = canvas_add(0, 0, cfg.size, cfg.size)
+
+    if cfg.top_x and cfg.top_y then
+        needle = canvas_add(cfg.top_x, cfg.top_y, cfg.size, cfg.size)
+    else
+        needle = canvas_add(0, 0, cfg.size, cfg.size)        
+    end
+
     aaa = canvas_draw(needle, function()
 
         draw_needle(needle_cfg, cfg)
@@ -116,34 +139,31 @@ function set_needle_value(needle_cfg, cfg, value)
     NEEDLE_VALUES[needle_cfg.handle].current_value = get_angle(value, cfg)
 end
 
--- CURRENT_VALUE = 0
--- CURRENT_NEEDLE_VALUE = 0
--- MAX_NEEDLE_MOVEMENT = math.abs((VALUES.min - VALUES.max) * 0.10)
-
--- function set_value(value)
---     CURRENT_VALUE = value
--- end
-
 tmr_update = timer_start(0, 50, function()
 
     for _, needle in ipairs(NEEDLE_VALUES) do
         current_needle = needle.current_needle_value
         current_value = needle.current_value
 
-        if (math.abs(current_value - current_needle) > needle.max_needle_movement) then
-            if current_value > current_needle then
-                current_needle = current_needle + needle.max_needle_movement
+        if needle.max_needle_movement >= 0 then
+
+            if (math.abs(current_value - current_needle) > needle.max_needle_movement) then
+                if current_value > current_needle then
+                    current_needle = current_needle + needle.max_needle_movement
+                else
+                    current_needle = current_needle - needle.max_needle_movement
+                end
             else
-                current_needle = current_needle - needle.max_needle_movement
+                current_needle = current_value
             end
+
+            needle.current_needle_value = current_needle
+            needle.current_value = current_value
+
+            rotate(needle.needle_canvas, current_needle)
         else
-            current_needle = current_value
+            rotate(needle.needle_canvas, current_value)
         end
-
-        needle.current_needle_value = current_needle
-        needle.current_value = current_value
-
-        rotate(needle.needle_canvas, current_needle)
     end
 
 end)
