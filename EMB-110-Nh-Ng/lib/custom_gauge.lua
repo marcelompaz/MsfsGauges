@@ -50,7 +50,26 @@ function draw_needle(needle, cfg)
     _fill(needle.circle_color)
 
     if needle.needle_label then
-        _txt(needle.needle_label[2], needle.needle_label[1], cfg.centerX , cfg.centerY - (cfg.radius/2))
+        _txt(needle.needle_label[2], needle.needle_label[1], cfg.centerX, cfg.centerY - (cfg.radius / 2))
+    end
+
+end
+
+function draw_ticks_sequence(initial_angle, end_angle, num_ticks, tick_labels, internal_ticks, cfg)
+    div = (end_angle - initial_angle) / (num_ticks - 1)
+    -- 
+    for i = 1, num_ticks do
+        local angle = initial_angle + (i - 1) * div
+        draw_tick(angle, cfg.major_tick, cfg)
+        draw_tick_text(angle, tick_labels[i], cfg.major_tick, cfg)
+
+        internal_div = (div / (internal_ticks + 1))
+        if i < num_ticks then
+            for j = 1, internal_ticks do
+                local internal_angle = angle + internal_div + (j - 1) * internal_div
+                draw_tick(internal_angle, cfg.minor_tick, cfg)
+            end
+        end
     end
 
 end
@@ -64,9 +83,8 @@ function draw_gauge(cfg)
     if cfg.top_x and cfg.top_y then
         canvas_id = canvas_add(cfg.top_x, cfg.top_y, cfg.size, cfg.size)
     else
-        canvas_id = canvas_add(0, 0, cfg.size, cfg.size)        
+        canvas_id = canvas_add(0, 0, cfg.size, cfg.size)
     end
-    
 
     canvas_draw(canvas_id, function()
 
@@ -77,45 +95,53 @@ function draw_gauge(cfg)
         _circle(cfg.centerX, cfg.centerY, cfg.radius)
         _fill(cfg.gauge_bottom)
 
+        if cfg.ticks_table then
+            interpolate_table = {}
+            if cfg.ticks_table.bottom_of_scale then
+                table.insert(interpolate_table, cfg.ticks_table.bottom_of_scale)
+            end
+
+            for _, ticks in ipairs(cfg.ticks_table) do
+                table.insert(interpolate_table, {ticks.value, ticks.initial_angle})
+            end
+            if cfg.ticks_table.top_of_scale then
+                table.insert(interpolate_table, cfg.ticks_table.top_of_scale)
+            end
+
+            cfg.interpolate_table = interpolate_table
+        end
+
         if cfg.arcs then
             for _, arc in pairs(cfg.arcs) do
                 draw_arc(arc, cfg)
             end
         end
-
-        div = (cfg.end_angle - cfg.initial_angle) / (cfg.num_ticks - 1)
-
-        -- 
-        for i = 1, cfg.num_ticks do
-            local angle = cfg.initial_angle + (i - 1) * div
-            draw_tick(angle, cfg.major_tick, cfg)
-            draw_tick_text(angle, cfg.tick_labels[i], cfg.major_tick, cfg)
-
-            internal_div = (div / (cfg.internal_ticks + 1))
-            if i < cfg.num_ticks then
-                for j = 1, cfg.internal_ticks do
-                    local internal_angle = angle + internal_div + (j - 1) * internal_div
-                    draw_tick(internal_angle, cfg.minor_tick, cfg)
-                end
+        if cfg.ticks_table then
+            for _, ticks in ipairs(cfg.ticks_table) do
+                draw_ticks_sequence(ticks.initial_angle, ticks.end_angle, ticks.num_ticks, ticks.ticks_labels,
+                    ticks.internal_ticks, cfg)
             end
+        else
+            draw_ticks_sequence(cfg.initial_angle, cfg.end_angle, cfg.num_ticks, cfg.tick_labels, cfg.internal_ticks,
+                cfg)
+
         end
 
     end)
-
 
     return cfg
 
 end
 
-LAST_HANDLE = 1
-NEEDLE_VALUES = {}
+local LAST_HANDLE = 1
+local NEEDLE_VALUES = {}
 
 function add_needle(cfg, needle_cfg)
 
     if cfg.top_x and cfg.top_y then
         needle = canvas_add(cfg.top_x, cfg.top_y, cfg.size, cfg.size)
     else
-        needle = canvas_add(0, 0, cfg.size, cfg.size)        
+        needle = canvas_add(0, 0, cfg.size, cfg.size)
     end
 
     aaa = canvas_draw(needle, function()
@@ -124,11 +150,14 @@ function add_needle(cfg, needle_cfg)
 
     end)
     needle_cfg.handle = LAST_HANDLE
+
     table.insert(NEEDLE_VALUES, {
-        current_value = get_angle(cfg.interpolate_table[1][1], cfg),
-        current_needle_value =  get_angle(cfg.interpolate_table[1][1], cfg),
+        -- current_value = get_angle(cfg.interpolate_table[1][1], cfg),
+        -- current_needle_value = get_angle(cfg.interpolate_table[1][1], cfg),
+        current_value = 0,
+        current_needle_value = 0,
         needle_canvas = needle,
-        cfg = cfg, 
+        cfg = cfg,
         max_needle_movement = needle_cfg.max_movement_per_cycle
     })
     LAST_HANDLE = LAST_HANDLE + 1
