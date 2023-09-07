@@ -65,7 +65,7 @@ local DECIMAL_GAUGE = {
     arcs = {{
         color = "white",
         initial = 0,
-        final = 100,
+        final = 10,
         width = 1,
         external = true
     }},

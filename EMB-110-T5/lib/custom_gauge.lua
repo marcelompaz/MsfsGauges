@@ -1,5 +1,5 @@
 function get_angle(value, cfg)
-    return interpolate_linear(cfg.interpolate_table, value, true)
+    return interpolate_linear(cfg.interpolate_table, value, false)
 end
 
 function draw_arc(arc, cfg)
