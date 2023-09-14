@@ -10,8 +10,8 @@ local MAIN_GAUGE = {
     minor_tick = 8,
 
     TICK_COLOR = "white",
-    background = "gray",
-    gauge_bottom = "black",
+    background = "#505761",
+    gauge_bottom = "#12111e",
 
     initial_angle = 0,
     end_angle = 270,
@@ -49,7 +49,7 @@ local DECIMAL_GAUGE = {
 
     TICK_COLOR = "white",
     background = nil,
-    gauge_bottom = "black",
+    gauge_bottom = "#12111e",
 
     initial_angle = 0,
     end_angle = 360,
@@ -86,7 +86,7 @@ local MAIN_NEEDLE = {
     circle_color = "gray",
     circle_text = "",
     size_ratio = 0.85,
-    needle_color = "white",
+    needle_color = "#a3a8b0",
     needle_text = "",
     needle_tickness = 10,
     max_movement_per_cycle = 1.5,
@@ -98,7 +98,7 @@ local DECIMAL_NEEDLE = {
     circle_color = "white",
     circle_text = "",
     size_ratio = 0.6,
-    needle_color = "white",
+    needle_color = "#a3a8b0",
     needle_text = "",
     needle_tickness = 6,
     max_movement_per_cycle = -1

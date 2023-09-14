@@ -6,8 +6,8 @@ local TORQUE_GAUGE_CFG = {
     minor_tick = 8,
 
     TICK_COLOR = "white",
-    background = "gray",
-    gauge_bottom = "black",
+    background = "#505761",
+    gauge_bottom = "#12111e",
 
     initial_angle = 120,
     end_angle = 400,
@@ -48,7 +48,7 @@ local NEEDLE = {
     circle_color = "gray",
     circle_text = "",
     size_ratio = 0.85,
-    needle_color = "white",
+    needle_color = "#a3a8b0",
     needle_text = "",
     needle_tickness = 12,
     max_movement_per_cycle = 1.5

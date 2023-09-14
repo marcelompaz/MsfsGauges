@@ -1,3 +1,5 @@
+--C:\Users\marce\AppData\Roaming\Microsoft Flight Simulator\Packages\Official\Steam\nextgensim-aircraft-bandeirante\html_ui\Pages\VCockpit\Instruments
+
 -- Backgroud Image before anything else
 img_add_fullscreen("background.png")
 
@@ -9,7 +11,7 @@ local function button(pressed_btn, coord, size, cb)
 end
 
 local function txt_enabled(btn, txt, size)
-    t = txt_add(txt, "font:Inconsolata.ttf; size:9; color: Yellow; halign:center;", btn.x, btn.y - 14, size.x, 12)
+    t = txt_add(txt, "font:Inconsolata.ttf; size:9; color: Green; halign:center;", btn.x, btn.y - 14, size.x, 12)
     visible(t, false)
     return t
 end
@@ -142,7 +144,7 @@ end)
 
 button(nil, APR_btn, BTN_size, function()
     -- fs2020_event("AP_APR_HOLD")
-    fs2020_event(" H:PMS50_APGA_AP_APR")
+    fs2020_event("H:PMS50_APGA_AP_APR")
     sound_play(snd_click)
 end)
 
