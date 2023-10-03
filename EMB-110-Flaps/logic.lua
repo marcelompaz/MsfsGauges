@@ -1,4 +1,4 @@
-flaps_switch = switch_add("flaps_0.png", "flaps_25.png", "flaps_50.png", "flaps_75.png", "flaps_100.png", 0, 0, 486,
+flaps_switch = switch_add("Flaps_0.png", "Flaps_25.png", "Flaps_50.png", "Flaps_75.png", "Flaps_100.png", 0, 0, 486,
     990, function(position, direction)
 
         print(direction)
