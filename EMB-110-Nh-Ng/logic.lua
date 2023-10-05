@@ -83,8 +83,6 @@ local decimal_gauge = Gauge:new({
         top_of_scale = {120, 4320}
     },
 
-
-
     top_x = 35,
     top_y = 35
 })
@@ -124,8 +122,8 @@ main_needle:draw()
 decimal_needle:draw()
 
 function set_value(percent)
-    main_needle:set_needle_value(percent)
-    decimal_needle:set_needle_value(percent)
+    main_needle:set_value(percent)
+    decimal_needle:set_value(percent)
 end
 
 if tostring(user_prop_get(choice_prop)) == "Ng" then

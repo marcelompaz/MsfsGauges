@@ -1,4 +1,4 @@
-local MAIN_GAUGE = {
+local t5_gauge = Gauge:new({
 
     size = 400,
 
@@ -98,9 +98,9 @@ local MAIN_GAUGE = {
         },
         top_of_scale = {1200, 370}
     }
-}
+})
 
-local MAIN_NEEDLE = {
+t5_needle = Needle:new({
     circle_ratio = 0.15,
     circle_color = "gray",
     circle_text = "",
@@ -110,30 +110,24 @@ local MAIN_NEEDLE = {
     needle_tickness = 10,
     max_movement_per_cycle = 1.5
     --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
-}
+}, t5_gauge)
 
-MAIN_GAUGE = draw_gauge(MAIN_GAUGE)
+t5_gauge:draw()
 
 engine_number = user_prop_add_integer("Engine Number", 1, 4, 1, "Number of the engine that the rpm will be used")
 
 top_txt = txt_add("°C", "font:Inconsolata-Bold.ttf; size:50; color: white; halign:center; valign:center;", 100, 50,
-    200, 120)   
+    200, 120)
 
 t5_txt = txt_add("x100", "font:Inconsolata-Bold.ttf; size:50; color: white; halign:center; valign:center;", 100, 240,
-200, 120)
+    200, 120)
 
-main_needle = add_needle(MAIN_GAUGE, MAIN_NEEDLE)
-
-
+t5_needle:draw()
 
 lbfr_txt = txt_add("T5", "font:Inconsolata-Bold.ttf; size:40; color: white; halign:center; valign:center;", 180, 180,
     40, 40)
- 
 
-function set_value(celcius)
-    set_needle_value(MAIN_NEEDLE, MAIN_GAUGE, celcius)
-end
-
-fs2020_variable_subscribe("TURB ENG ITT:" .. tostring(user_prop_get(engine_number)), "CELSIUS", set_value)
-
+fs2020_variable_subscribe("TURB ENG ITT:" .. tostring(user_prop_get(engine_number)), "CELSIUS", function(celsius)
+    t5_needle:set_value(celsius)
+end)
 

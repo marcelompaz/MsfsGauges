@@ -1,4 +1,4 @@
-local FUEL_PRESSURE_GAUGE = {
+local fuel_pressure_gauge = Gauge:new({
 
     size = 256,
 
@@ -38,9 +38,9 @@ local FUEL_PRESSURE_GAUGE = {
         internal = true
     }}
 
-}
+})
 
-local LEFT_NEEDLE = {
+local left_fuel_pressure_needle = Needle:new({
     circle_ratio = 0.20,
     circle_color = "gray",
     circle_text = "",
@@ -49,10 +49,11 @@ local LEFT_NEEDLE = {
     needle_text = "",
     needle_tickness = 10,
     max_movement_per_cycle = 1.5,
-    needle_label = {"font:" .. FUEL_PRESSURE_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "L"}
-}
+    needle_label = {"font:" .. fuel_pressure_gauge.font .. "; size: 20; color: black ; halign:center; valign:center",
+                    "L"}
+}, fuel_pressure_gauge)
 
-local RIGHT_NEEDLE = {
+local right_fuel_pressure_needle = Needle:new({
     circle_ratio = 0.20,
     circle_color = "gray",
     circle_text = "",
@@ -61,36 +62,31 @@ local RIGHT_NEEDLE = {
     needle_text = "",
     needle_tickness = 10,
     max_movement_per_cycle = 1.5,
-    needle_label = {"font:" .. FUEL_PRESSURE_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"}
-}
+    needle_label = {"font:" .. fuel_pressure_gauge.font .. "; size: 20; color: black ; halign:center; valign:center",
+                    "R"}
+}, fuel_pressure_gauge)
 
-FUEL_PRESSURE_GAUGE = draw_gauge(FUEL_PRESSURE_GAUGE)
-
--- engine_number = user_prop_add_integer("Engine Number", 1, 4, 1, "Number of the engine that the rpm will be used")
+fuel_pressure_gauge:draw()
 
 x_diff = 70
 y1 = 45
 
 sy = 30
 
-x = (256 / 2) -x_diff
-sx = ((256 / 2) -x) * 2
+x = (256 / 2) - x_diff
+sx = ((256 / 2) - x) * 2
 
+y2 = 256 / 2 + y1
 
-y2 = 256/2 + y1
+txt_add("FUEL", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", x, y1, sx, sy)
 
+txt_add("PSI", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", x, y2, sx, sy)
 
-txt_add("FUEL", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", x,
-    y1, sx, sy)
-
-txt_add("PSI", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", x, y2,
-    sx, sy)
-
-main_needle = add_needle(FUEL_PRESSURE_GAUGE, LEFT_NEEDLE)
-main_needle = add_needle(FUEL_PRESSURE_GAUGE, RIGHT_NEEDLE)
+left_fuel_pressure_needle:draw()
+right_fuel_pressure_needle:draw()
 
 fs2020_variable_subscribe("GENERAL ENG FUEL PRESSURE:1", "PSI", "GENERAL ENG FUEL PRESSURE:2", "PSI",
-    function(left_fuel_pressure, right_oil)
-        set_needle_value(LEFT_NEEDLE, FUEL_PRESSURE_GAUGE, left_fuel_pressure)
-        set_needle_value(RIGHT_NEEDLE, FUEL_PRESSURE_GAUGE, right_oil)
+    function(left_fuel_pressure, right_fuel_pressure)
+        left_fuel_pressure_needle:set_value(left_fuel_pressure)
+        right_fuel_pressure_needle:set_value(right_fuel_pressure)
     end)

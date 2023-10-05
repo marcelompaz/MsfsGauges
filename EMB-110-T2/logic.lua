@@ -1,4 +1,4 @@
-local T2_GAUGE = {
+local t2_gauge = Gauge:new({
 
     size = 256,
 
@@ -29,9 +29,9 @@ local T2_GAUGE = {
         },
         top_of_scale = {50, 350}
     },
-}
+})
 
-local MAIN_NEEDLE = {
+local t2_needle = Needle:new({
     circle_ratio = 0.20,
     circle_color = "gray",
     circle_text = "T2",
@@ -41,22 +41,17 @@ local MAIN_NEEDLE = {
     needle_tickness = 10,
     max_movement_per_cycle = 1.5,
  --   needle_label = {"font:" .. T2_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "L"}
-}
+}, t2_gauge)
 
 
 
-T2_GAUGE = draw_gauge(T2_GAUGE)
-
-
-
-
-
-MAIN_NEEDLE = add_needle(T2_GAUGE, MAIN_NEEDLE)
+t2_gauge:draw()
+t2_needle:draw()
 
 txt_add("T2", "font:Inconsolata-Bold.ttf; size:30; color: white; halign:center; valign:center;", 128*0.8, 128*0.8,
 128*0.4, 128*0.4)
 
 fs2020_variable_subscribe("AMBIENT TEMPERATURE", "CELSIUS",
     function(temperature)
-        set_needle_value(MAIN_NEEDLE, T2_GAUGE, temperature)
+        t2_needle:set_value(temperature)
     end)

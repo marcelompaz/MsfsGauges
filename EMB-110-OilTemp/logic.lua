@@ -1,4 +1,4 @@
-local OIL_TEMPERATURE_GAUGE = {
+local oil_temp_gauge = Gauge:new({
 
     size = 256,
 
@@ -50,9 +50,9 @@ local OIL_TEMPERATURE_GAUGE = {
         internal = true
     }}
 
-}
+})
 
-local MAIN_NEEDLE = {
+local oil_temp_needle = Needle:new({
     circle_ratio = 0.20,
     circle_color = "gray",
     circle_text = "",
@@ -62,9 +62,9 @@ local MAIN_NEEDLE = {
     needle_tickness = 10,
     max_movement_per_cycle = 1.5
     --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
-}
+}, oil_temp_gauge)
 
-OIL_TEMPERATURE_GAUGE = draw_gauge(OIL_TEMPERATURE_GAUGE)
+oil_temp_gauge:draw()
 
 engine_number = user_prop_add_integer("Engine Number", 1, 4, 1, "Number of the engine that the rpm will be used")
 
@@ -74,9 +74,9 @@ txt_add("OIL", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center;
 txt_add("TEMP", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", 150, 43,
     120, 120)
 
-main_needle = add_needle(OIL_TEMPERATURE_GAUGE, MAIN_NEEDLE)
+oil_temp_needle:draw()
 
 fs2020_variable_subscribe("GENERAL ENG OIL TEMPERATURE:" .. tostring(user_prop_get(engine_number)), "Celsius",
     function(flow)
-        set_needle_value(MAIN_NEEDLE, OIL_TEMPERATURE_GAUGE, flow)
+        oil_temp_needle:set_value(flow)
     end)

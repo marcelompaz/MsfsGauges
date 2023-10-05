@@ -1,4 +1,4 @@
-local FUEL_GAUGE = {
+local fuel_flow_gauge = Gauge:new({
 
     size = 256,
 
@@ -29,9 +29,9 @@ local FUEL_GAUGE = {
         },
         top_of_scale = {500, 495}
     }
-}
+})
 
-local MAIN_NEEDLE = {
+local fuel_flow_needle = Needle:new({
     circle_ratio = 0.15,
     circle_color = "gray",
     circle_text = "",
@@ -40,10 +40,9 @@ local MAIN_NEEDLE = {
     needle_text = "",
     needle_tickness = 10,
     max_movement_per_cycle = 1.5
-    --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
-}
+}, fuel_flow_gauge)
 
-MAIN_GAUGE = draw_gauge(FUEL_GAUGE)
+fuel_flow_gauge:draw()
 
 engine_number = user_prop_add_integer("Engine Number", 1, 4, 1, "Number of the engine that the rpm will be used")
 
@@ -53,8 +52,8 @@ top_txt = txt_add("FUEL FLOW", "font:Inconsolata-Bold.ttf; size:25; color: white
 btn_txt = txt_add("Lbs/Hr", "font:Inconsolata-Bold.ttf; size:25; color: white; halign:center; valign:center;", 70, 150,
     120, 120)
 
-main_needle = add_needle(FUEL_GAUGE, MAIN_NEEDLE)
+fuel_flow_needle:draw()
 
 fs2020_variable_subscribe("TURB ENG FUEL FLOW PPH:" .. tostring(user_prop_get(engine_number)), "Pounds per hour", function(flow)
-    set_needle_value(MAIN_NEEDLE, MAIN_GAUGE, flow)
+    fuel_flow_needle:set_value(flow)
 end)

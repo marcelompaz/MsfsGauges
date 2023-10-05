@@ -8,7 +8,7 @@ flaps_switch = switch_add("Flaps_0.png", "Flaps_25.png", "Flaps_50.png", "Flaps_
 
 
 
-local FLAPS_GAUGE = {
+local flaps_gauge = Gauge:new({
 
     size = 486,
 
@@ -42,9 +42,9 @@ local FLAPS_GAUGE = {
         },
         top_of_scale = {100, 550}
     }
-}
+})
 
-local MAIN_NEEDLE = {
+local flaps_needle = Needle:new({
     circle_ratio = 0.15,
     circle_color = "gray",
     circle_text = "",
@@ -54,9 +54,9 @@ local MAIN_NEEDLE = {
     needle_tickness = 10,
     max_movement_per_cycle = 1.5
     --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
-}
+}, flaps_gauge)
 
-FLAPS_GAUGE = draw_gauge(FLAPS_GAUGE)
+flaps_gauge:draw()
 
 txt_add("FLAPS", "font:Inconsolata-Bold.ttf; size:50; color: white; halign:center; valign:center;", 72,
     1050, 120, 120)
@@ -68,9 +68,7 @@ txt_add("EXTENDED", "font:Inconsolata-Bold.ttf; size:30; color: white; halign:ce
     180, 120)
 
 
-MAIN_NEEDLE = add_needle(FLAPS_GAUGE, MAIN_NEEDLE)
-
-
+flaps_needle:draw()
 
 
 function new_data_fs(flaps, flaps_handle)
@@ -78,7 +76,7 @@ function new_data_fs(flaps, flaps_handle)
     switch_value = interpolate_linear(interpolate_table, flaps_handle)
     switch_set_position(flaps_switch, switch_value)
 
-    set_needle_value(MAIN_NEEDLE, FLAPS_GAUGE, flaps)
+    flaps_needle:set_value(flaps)
 
 end
 

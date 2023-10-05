@@ -67,7 +67,7 @@ function Needle:new(needle, gauge)
     return o
 end
 
-function Needle:set_needle_value(value)
+function Needle:set_value(value)
     self.current_value = value
     --   rotate(self.canvas, self.gauge:get_angle(self.current_value))
 end
