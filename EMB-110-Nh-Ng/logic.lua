@@ -13,14 +13,19 @@ local main_gauge = Gauge:new({
     background = "#505761",
     gauge_bottom = "#12111e",
 
-    initial_angle = 0,
-    end_angle = 270,
-    num_ticks = 11,
-    internal_ticks = 0,
-
     gauge_ratio = 0.98,
 
-    tick_labels = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"},
+    ticks_table = {
+        {
+            initial_angle = 0,
+            end_angle = 270,
+            num_ticks = 11,
+            internal_ticks = 0,
+            value = 0,
+            ticks_labels = {"0", "", "20", "", "40", "", "60", "", "80", "", "100", "", "120", "", "140"}
+        },
+        top_of_scale = {110, 297}
+    },
 
     tick_color = "white",
 
@@ -35,22 +40,8 @@ local main_gauge = Gauge:new({
     font = "Inconsolata.ttf",
     font_color = "white",
     font_size = 25,
-    internal_text = true,
-
-    interpolate_table = {{0, 0}, {100, 270}, {110, 290}}
+    internal_text = true
 })
-
-local main_needle = Needle:new({
-    circle_ratio = 0.15,
-    circle_color = "gray",
-    circle_text = "",
-    size_ratio = 0.85,
-    needle_color = "#a3a8b0",
-    needle_text = "",
-    needle_tickness = 10,
-    max_movement_per_cycle = 1.5
-    --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
-}, main_gauge)
 
 local decimal_gauge = Gauge:new({
 
@@ -63,14 +54,7 @@ local decimal_gauge = Gauge:new({
     background = nil,
     gauge_bottom = "#12111e",
 
-    initial_angle = 0,
-    end_angle = 360,
-    num_ticks = 11,
-    internal_ticks = 0,
-
     gauge_ratio = 0.7,
-
-    tick_labels = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""},
 
     tick_color = "white",
 
@@ -87,11 +71,35 @@ local decimal_gauge = Gauge:new({
     font_size = 14,
     internal_text = false,
 
-    interpolate_table = {{0, 0}, {10, 360}, {120, 4320}},
+    ticks_table = {
+        {
+            initial_angle = 0,
+            end_angle = 360,
+            num_ticks = 11,
+            internal_ticks = 0,
+            value = 0,
+            ticks_labels = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ""},
+        },
+        top_of_scale = {120, 4320}
+    },
+
+
 
     top_x = 35,
     top_y = 35
 })
+
+local main_needle = Needle:new({
+    circle_ratio = 0.15,
+    circle_color = "gray",
+    circle_text = "",
+    size_ratio = 0.85,
+    needle_color = "#a3a8b0",
+    needle_text = "",
+    needle_tickness = 10,
+    max_movement_per_cycle = 1.5
+    --   needle_label = {"font:" .. MAIN_GAUGE.font .. "; size: 20; color: black ; halign:center; valign:center", "R"},
+}, main_gauge)
 
 local decimal_needle = Needle:new({
     circle_ratio = 0.05,

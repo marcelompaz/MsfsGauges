@@ -21,14 +21,16 @@ function Gauge:new(mainGauge)
         end
 
         for _, ticks in ipairs(mainGauge.ticks_table) do
-            table.insert(interpolate_table, {mainGauge.value, mainGauge.initial_angle})
+            
+            table.insert(interpolate_table, {ticks.value, ticks.initial_angle})
         end
-        if self.ticks_table.top_of_scale then
-            table.insert(interpolate_table, self.mainGauge.top_of_scale)
+        if mainGauge.ticks_table.top_of_scale then
+            table.insert(interpolate_table, mainGauge.ticks_table.top_of_scale)
         end
 
         o.interpolate_table = interpolate_table
     end
+
 
     o.swap_interpolate_table = {}
     
@@ -36,6 +38,8 @@ function Gauge:new(mainGauge)
         local invertedEntry = {o.interpolate_table[i][2], o.interpolate_table[i][1]}
         table.insert(o.swap_interpolate_table, invertedEntry)
     end  
+
+    
 
     local first = o.interpolate_table[1][1]
     local last = o.interpolate_table[#o.interpolate_table][1]
