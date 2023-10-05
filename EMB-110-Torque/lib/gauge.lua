@@ -1,31 +1,72 @@
-local Gauge = {}
+Gauge = {}
 
 function Gauge:new(mainGauge)
-    mainGauge = mainGauge or {}
-    setmetatable(mainGauge, self)
-    self.__index = self
+    local o = mainGauge
+    setmetatable(o, {__index = self})
 
-    self.radius = (self.size / 2) * self.gauge_ratio
-    self.centerX = self.size / 2
-    self.centerY = self
+    o.radius = (mainGauge.size / 2) * mainGauge.gauge_ratio
+    o.centerX = mainGauge.size / 2
+    o.centerY = mainGauge.size / 2
 
-    if self.top_x and self.top_y then
-        self.canvas_id = canvas_add(self.top_x, self.top_y, self.size, self.size)
+    if mainGauge.top_x and mainGauge.top_y then
+        o.canvas_id = canvas_add(mainGauge.top_x, mainGauge.top_y, mainGauge.size, mainGauge.size)
     else
-        self.canvas_id = canvas_add(0, 0, self.size, self.size)
+        o.canvas_id = canvas_add(0, 0, mainGauge.size, mainGauge.size)
     end
 
-    return mainGauge
+    if mainGauge.ticks_table then
+        interpolate_table = {}
+        if mainGauge.ticks_table.bottom_of_scale then
+            table.insert(interpolate_table, mainGauge.ticks_table.bottom_of_scale)
+        end
+
+        for _, ticks in ipairs(mainGauge.ticks_table) do
+            table.insert(interpolate_table, {mainGauge.value, mainGauge.initial_angle})
+        end
+        if self.ticks_table.top_of_scale then
+            table.insert(interpolate_table, self.mainGauge.top_of_scale)
+        end
+
+        o.interpolate_table = interpolate_table
+    end
+
+    o.swap_interpolate_table = {}
+    
+    for i = 1, #o.interpolate_table do
+        local invertedEntry = {o.interpolate_table[i][2], o.interpolate_table[i][1]}
+        table.insert(o.swap_interpolate_table, invertedEntry)
+    end  
+
+    local first = o.interpolate_table[1][1]
+    local last = o.interpolate_table[#o.interpolate_table][1]
+    self.is_incremental = first < last
+
+    return o
 end
 
 function Gauge:get_angle(value)
     return interpolate_linear(self.interpolate_table, value, true)
 end
 
+function Gauge:get_initial_value()
+    return self.interpolate_table[1][1]
+end
+
+function Gauge:get_initial_angle()
+    return self.swap_interpolate_table[1][1]
+end
+
+function Gauge:get_value(angle)
+    return interpolate_linear(self.swap_interpolate_table, angle, true)
+end
+
+function Gauge:is_incremental()
+
+end
 
 function Gauge:draw_arc(arc)
-    initial = self.get_angle(arc.initial)
-    final = self.get_angle(arc.final)
+    initial = self:get_angle(arc.initial)
+    final = self:get_angle(arc.final)
     if arc.internal then
         _arc(self.centerX, self.centerY, initial - 90, final - 90, self.radius - arc.width / 2)
     else
@@ -59,14 +100,14 @@ function Gauge:draw_ticks_sequence(initial_angle, end_angle, num_ticks, tick_lab
     -- 
     for i = 1, num_ticks do
         local angle = initial_angle + (i - 1) * div
-        self.draw_tick(angle, self.major_tick)
-        self.draw_tick_text(angle, tick_labels[i], self.major_tick)
+        self:draw_tick(angle, self.major_tick)
+        self:draw_tick_text(angle, tick_labels[i], self.major_tick)
 
         internal_div = (div / (internal_ticks + 1))
         if i < num_ticks then
             for j = 1, internal_ticks do
                 local internal_angle = angle + internal_div + (j - 1) * internal_div
-                self.draw_tick(internal_angle, self.minor_tick)
+                self:draw_tick(internal_angle, self.minor_tick)
             end
         end
     end
@@ -76,44 +117,27 @@ end
 function Gauge:draw_arcs()
     if self.arcs then
         for _, arc in pairs(self.arcs) do
-            self.draw_arc(arc)
+            self:draw_arc(arc)
         end
     end
 end
 
-function Gauge:create_interpolate_table()
-    if self.ticks_table then
-        interpolate_table = {}
-        if self.ticks_table.bottom_of_scale then
-            table.insert(interpolate_table, self.ticks_table.bottom_of_scale)
-        end
-
-        for _, ticks in ipairs(self.ticks_table) do
-            table.insert(interpolate_table, {ticks.value, ticks.initial_angle})
-        end
-        if self.ticks_table.top_of_scale then
-            table.insert(interpolate_table, self.ticks_table.top_of_scale)
-        end
-
-        self.interpolate_table = interpolate_table
-    end
-end
 
 function Gauge:draw_tics()
     if self.ticks_table then
         for _, ticks in ipairs(self.ticks_table) do
-            draw_ticks_sequence(ticks.initial_angle, ticks.end_angle, ticks.num_ticks, ticks.ticks_labels,
+            self:draw_ticks_sequence(ticks.initial_angle, ticks.end_angle, ticks.num_ticks, ticks.ticks_labels,
                 ticks.internal_ticks, self)
         end
     else
-        draw_ticks_sequence(self.initial_angle, self.end_angle, self.num_ticks, self.tick_labels, self.internal_ticks,
+        self:draw_ticks_sequence(self.initial_angle, self.end_angle, self.num_ticks, self.tick_labels, self.internal_ticks,
             self)
 
     end
 end
 
 function Gauge:draw()
-    canvas_draw(canvas_id, function()
+    canvas_draw(self.canvas_id, function()
 
         if self.background then
             _rect(0, 0, self.size, self.size)
@@ -122,9 +146,8 @@ function Gauge:draw()
         _circle(self.centerX, self.centerY, self.radius)
         _fill(self.gauge_bottom)
 
-        self.draw_arcs()
-        self.create_interpolate_table()
-        self.draw_tics()
+        self:draw_arcs()
+        self:draw_tics()
 
     end)
 
