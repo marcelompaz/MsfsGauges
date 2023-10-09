@@ -11,6 +11,7 @@ I play with two monitors, so here it's an example how I use those gauges:
 
 ![Bandeirante Secondary](https://github.com/marcelompaz/MsfsGauges/assets/18484523/f590c26f-084a-42be-8b15-17a46b1a0279)
 
+The GNS530/430 I use the default ones from MSFS
 
 # KAS297 (altitude/vertical speed selector) and KMC321 (auto-pilot)
 The KAS297 display can be popped-out from MSFS, but there is no SDK event to control the switch between VS and ALTITUDE, so I wrote the display myself. There is no need to pop-out the KAS297 with this version. But the VS/ALTITUDE (knob press) selection will not be reflected on the real airplane. But the opposite (pressing the knob inside MSFS) will be reflected on AirManager. 
