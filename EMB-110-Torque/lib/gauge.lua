@@ -2,7 +2,9 @@ Gauge = {}
 
 function Gauge:new(mainGauge)
     local o = mainGauge
-    setmetatable(o, {__index = self})
+    setmetatable(o, {
+        __index = self
+    })
 
     o.radius = (mainGauge.size / 2) * mainGauge.gauge_ratio
     o.centerX = mainGauge.size / 2
@@ -21,7 +23,7 @@ function Gauge:new(mainGauge)
         end
 
         for _, ticks in ipairs(mainGauge.ticks_table) do
-            
+
             table.insert(interpolate_table, {ticks.value, ticks.initial_angle})
         end
         if mainGauge.ticks_table.top_of_scale then
@@ -31,15 +33,12 @@ function Gauge:new(mainGauge)
         o.interpolate_table = interpolate_table
     end
 
-
     o.swap_interpolate_table = {}
-    
+
     for i = 1, #o.interpolate_table do
         local invertedEntry = {o.interpolate_table[i][2], o.interpolate_table[i][1]}
         table.insert(o.swap_interpolate_table, invertedEntry)
-    end  
-
-    
+    end
 
     local first = o.interpolate_table[1][1]
     local last = o.interpolate_table[#o.interpolate_table][1]
@@ -93,10 +92,13 @@ function Gauge:draw_tick_text(angle, label, tick_size)
     end
 end
 
-function Gauge:draw_tick(degrees, tick_size)
+function Gauge:draw_tick(degrees, tick_size, tick_color)
+    if not tick_color then
+        tick_color = self.tick_color
+    end
     arc_angle = degrees - 90
     _arc(self.centerX, self.centerY, arc_angle - 0.5, arc_angle + 0.5, self.radius - tick_size / 2)
-    _stroke(self.tick_color, tick_size)
+    _stroke(tick_color, tick_size)
 end
 
 function Gauge:draw_ticks_sequence(initial_angle, end_angle, num_ticks, tick_labels, internal_ticks)
@@ -111,7 +113,15 @@ function Gauge:draw_ticks_sequence(initial_angle, end_angle, num_ticks, tick_lab
         if i < num_ticks then
             for j = 1, internal_ticks do
                 local internal_angle = angle + internal_div + (j - 1) * internal_div
-                self:draw_tick(internal_angle, self.minor_tick)
+                if self.mini_tick then
+                    if j % 2 == 1 then
+                        self:draw_tick(internal_angle, self.mini_tick)
+                    else
+                        self:draw_tick(internal_angle, self.minor_tick)    
+                    end
+                else
+                    self:draw_tick(internal_angle, self.minor_tick)
+                end
             end
         end
     end
@@ -126,16 +136,24 @@ function Gauge:draw_arcs()
     end
 end
 
+function Gauge:draw_extra_ticks()
+    if self.extra_ticks then
+        for _, tick in pairs(self.extra_ticks) do
+            angle = self:get_angle(tick.value)
+            self:draw_tick(angle, tick.size, tick.color)
+        end
+    end
+end
 
 function Gauge:draw_tics()
     if self.ticks_table then
         for _, ticks in ipairs(self.ticks_table) do
             self:draw_ticks_sequence(ticks.initial_angle, ticks.end_angle, ticks.num_ticks, ticks.ticks_labels,
-                ticks.internal_ticks, self)
+                ticks.internal_ticks)
         end
     else
-        self:draw_ticks_sequence(self.initial_angle, self.end_angle, self.num_ticks, self.tick_labels, self.internal_ticks,
-            self)
+        self:draw_ticks_sequence(self.initial_angle, self.end_angle, self.num_ticks, self.tick_labels,
+            self.internal_ticks, self)
 
     end
 end
@@ -152,6 +170,7 @@ function Gauge:draw()
 
         self:draw_arcs()
         self:draw_tics()
+        self:draw_extra_ticks()
 
     end)
 
