@@ -17,7 +17,22 @@ The config table is a LUA table containing elements for each parameter from the 
 | ----------- | ----------- | --------- |
 | size      | Size of the gauge (px)       | Yes |
 | major_tick      | Size of major tick (px)      | Yes |
-| minor_tick      | Size of minor tick (px)      | No |
+| minor_tick      | Size of the ticks located between the major ticks (px)      | No |
+| mini_tick      | Size of the ticks located between the minor ticks (px)      | No |
+| mini_tick      | Size of the ticks located between the minor ticks (px)      | No |
+| tick_color      | Color of the ticks      | Yes |
+| background      | Background collor (behind the gauge)      | Yes |
+| gauge_bottom      | Color of the bottom of the gauge (inside the gauge)      | Yes |
+| gauge_ratio      | Ratio (from 0 to 1) of the gauge size compared to the instument size  | Yes |
+| font      | Font for printing the labels (the TTF file needs to be contained on the resource folder)  | Yes |
+| font_color      | Font color  | Yes |
+| font      | Font Size  | Yes |
+| internal_text      | True if the numbers are shown inside the gauge, false for outside  | Yes |
+| ticks_table      | Table for the positioning of the ticks, check below for more details | Yes |
+| extra_ticks       | Table for extra ticks (e.g. Vr on a Airspeed gauge), check below for more details | Yes |
+| arcs        | Arcs showing specific ranges of values (e.g flap speed) on the gauge, check below for more details | Yes |
+
+
 
 
 
