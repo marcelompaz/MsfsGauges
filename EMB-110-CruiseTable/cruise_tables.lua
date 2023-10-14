@@ -223,7 +223,6 @@ function calculate_values(table, temperature, weight)
 end
 
 function get_optimal_cruise(altitude, temperature, weight)
-   
     if altitude < full_table[1].altitude then return nil end
     if altitude > full_table[#full_table].altitude then return nil end
 
@@ -231,6 +230,7 @@ function get_optimal_cruise(altitude, temperature, weight)
         if altitude < full_table[i].altitude then
             local v1 = calculate_values(full_table[i-1].values, temperature, weight)
             local v2 = calculate_values(full_table[i].values, temperature, weight)
+
             if v1 == nil or v2 == nil then return nil end
 
             return interpolate(full_table[i-1].altitude, v1, full_table[i].altitude, v2, altitude)
@@ -239,3 +239,4 @@ function get_optimal_cruise(altitude, temperature, weight)
     return nil
 end
 
+print_table(get_optimal_cruise(6561, 4535, 0))
