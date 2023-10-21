@@ -20,6 +20,11 @@ On KMC321 I added Proppeller Sync/Autofeather to the Soft Ride and Half Bank but
 # Custom Gauges
 As I mentioned, my graphical skills are very poor, so instead of drawing gauges manually, I wrote a library to generate them (lib folder). The library contain a part for gauges (gauges.lua) and the needles (needle.lua). You can have multiple gauges and needles in the same instrument. Graphically is not very pretty, but it's very fast to draw a new gauge if needed. And it can be used for any airplane, just copy the content of the lib folder to your gauge and it's ready to be used. 
 There is a README file inside the lib folder explaining how to use the lib 
+Those gauges are "platform independent" so it is possible to use for other sims besides MSFS2020
+
+# Symbolic Links and GitHub Zip File 
+The repository content is organized in a way that all gauges that uses the "Custom Gauges Library" have a symbolic link to the lib/resources folder. This way is possible to just edit the lib/resource folders and apply the changes to all gauges. 
+But ZIP files does not support linkage, so if the content of the repository is downloaded using the "Download ZIP" button, all those links will be lost and then the lib and resource foldes needs to be copied manually to each gauge. Cloning the repository with Git or GitHub Application avoids this situation
 
 # Maybe future developments 
 - Annunciator panels
