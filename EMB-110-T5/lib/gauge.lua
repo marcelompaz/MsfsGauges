@@ -14,6 +14,8 @@ function Gauge:new(mainGauge)
         o.canvas_id = canvas_add(mainGauge.top_x, mainGauge.top_y, mainGauge.size, mainGauge.size)
     else
         o.canvas_id = canvas_add(0, 0, mainGauge.size, mainGauge.size)
+        o.top_x = 0
+        o.top_y = 0
     end
 
     if mainGauge.ticks_table then
