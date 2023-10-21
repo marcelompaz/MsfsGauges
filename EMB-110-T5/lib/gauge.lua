@@ -119,7 +119,7 @@ function Gauge:draw_ticks_sequence(initial_angle, end_angle, num_ticks, tick_lab
                     if j % 2 == 1 then
                         self:draw_tick(internal_angle, self.mini_tick)
                     else
-                        self:draw_tick(internal_angle, self.minor_tick)    
+                        self:draw_tick(internal_angle, self.minor_tick)
                     end
                 else
                     self:draw_tick(internal_angle, self.minor_tick)
@@ -163,12 +163,27 @@ end
 function Gauge:draw()
     canvas_draw(self.canvas_id, function()
 
-        if self.background then
+        if self.background_img then
             _rect(0, 0, self.size, self.size)
-            _fill(self.background)
+            _fill_img(self.background_img.file, self.background_img.offset_x, self.background_img.offset_y,
+                self.background_img.size, self.background_img.size)
+        else
+            if self.background then
+                _rect(0, 0, self.size, self.size)
+                _fill(self.background)
+            end
         end
-        _circle(self.centerX, self.centerY, self.radius)
-        _fill(self.gauge_bottom)
+
+        if self.gauge_img then
+            _circle(self.centerX, self.centerY, self.gauge_img.size / 2)
+            _fill_img(self.gauge_img.file, self.gauge_img.offset_x, self.gauge_img.offset_y, self.gauge_img.size,
+                self.gauge_img.size)
+        else
+            if self.gauge_bottom then
+                _circle(self.centerX, self.centerY, self.radius)
+                _fill(self.gauge_bottom)
+            end
+        end
 
         self:draw_arcs()
         self:draw_tics()
